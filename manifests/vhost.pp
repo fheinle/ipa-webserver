@@ -34,7 +34,6 @@ define webserver::vhost (
 
   apache::vhost { $vhost_name:
     servername    => $vhost_name,
-    port          => '80',
     docroot       => $docroot,
     default_vhost => $default_vhost,
     access_log    => true,
@@ -43,7 +42,7 @@ define webserver::vhost (
   if $kerberos == true {
     Apache::Vhost[$vhost_name] {
       auth_kerb              => true,
-      krb_auth_realm         => $krb_auth_realm,
+      krb_auth_realms        => [$krb_auth_realm],
       krb_5keytab            => $krb_5keytab,
       krb_servicename        => $krb_servicename,
       krb_local_user_mapping => 'on',
@@ -57,11 +56,12 @@ define webserver::vhost (
   }
 
   if $ssl == true {
-    Apache::Vhost <| vhost_name == $vhost_name |> {
+    Apache::Vhost <| title == $vhost_name |> {
       port              => '443',
+      ssl               => true,
       ssl_protocol      => 'TLSv1.2',
-      ssl_cert_filename => $ssl_cert_filename,
-      ssl_key_filename  => $ssl_key_filename,
+      ssl_cert          => $ssl_cert_filename,
+      ssl_key           => $ssl_key_filename,
     }
     apache::vhost { "redirect_${vhost_name}":
       ensure          => present,
@@ -70,6 +70,10 @@ define webserver::vhost (
       docroot         => $docroot,
       redirect_status => 'permanent',
       redirect_dest   => "https://${vhost_name}/",
+    }
+  } else {
+    Apache::Vhost <| servername == $vhost_name |> {
+      port => '80'
     }
   }
 }
