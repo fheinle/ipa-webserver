@@ -1,16 +1,15 @@
 
-# ipa-webserver
+# krb-webserver
 
 This is a wrapper around `Apache` and `Apache::Vhost` from
 [puppetlabs/apache](https://forge.puppet.com/puppetlabs/apache) that adds SSL
-Certificate retrieval and Kerberos Authentication from
-[FreeIPA](https://www.free)ipa.org).
+and Kerberos compatible with [FreeIPA](https://www.freeipa.org).
 
 #### Table of Contents
 
 1. [Description](#description)
 2. [Setup](#setup)
-    * [What ipa-webserver affects](#what-ipa-webserver-affects)
+    * [What krb-webserver affects](#what-krb-webserver-affects)
     * [Setup requirements](#setup-requirements)
 3. [Usage - Configuration options and additional functionality](#usage)
 4. [Reference - An under-the-hood peek at what the module is doing and how](#reference)
@@ -27,7 +26,7 @@ server. Both options can be disabled.
 
 ## Setup
 
-### What ipa-webserver affects
+### What krb-webserver affects
 
 * Apache configuration: enables modules
 * Apache vhosts: adds 1 http and optionally 1 https vhost
@@ -72,6 +71,7 @@ webserver::vhost {'awesome_vhost':
     $krb_5keytab       = undef,
     $krb_servicename   = 'http'
 }
+```
 
 Those are the default settings, obviously you need to override them with your
 customizations. Especially make sure to set the correct values to `$krb5_*`.
