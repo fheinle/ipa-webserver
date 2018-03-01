@@ -4,7 +4,7 @@
   "author": "Florian Heinle <launchpad@planet-tiax.de>",
   "summary": "Wrapper around puppetlabs/apache with SSL and Kerberos from FreeIPA",
   "license": "MIT",
-  "source": "",
+  "source": "https://github.com/fheinle/krb-webserver.git",
   "dependencies": [
       {"name":"puppetlabs/apache","version_requirement":">= 3.0 < 4.0"}
   ],
