@@ -29,7 +29,7 @@ define webserver::vhost (
     ensure => directory,
     owner  => $web_user,
     group  => $web_user,
-    mode   => '0750',
+    mode   => '0755',
   }
 
   apache::vhost { $vhost_name:
