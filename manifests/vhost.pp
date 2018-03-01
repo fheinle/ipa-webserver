@@ -57,7 +57,7 @@ define webserver::vhost (
   }
 
   if $ssl == true {
-    Apache::Vhost[$vhost_name] {
+    Apache::Vhost <| vhost_name == $vhost_name |> {
       port              => '443',
       ssl_protocol      => 'TLSv1.2',
       ssl_cert_filename => $ssl_cert_filename,
