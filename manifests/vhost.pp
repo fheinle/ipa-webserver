@@ -2,19 +2,20 @@
 #
 # Create a new virtual host
 #
-# @summary This is a wrapper arround 'puppetlabs/apache' with krb and ssl from FreeIPA
+# @summary This is a wrapper arround 'puppetlabs/apache'
+# with krb and ssl from FreeIPA
 #
 # @example
 #   webserver::vhost { 'namevar': }
 define webserver::vhost (
-    $vhost_name    = $facts['fqdn'],
-    $docroot       = "/var/www/$vhost_name/html",
-    $ssl           = true,
-    $kerberos      = false,
-    $web_user      = 'www-data',
-    $default_vhost = false,
+    $vhost_name        = $::facts['fqdn'],
+    $docroot           = "/var/www/${vhost_name}/html",
+    $ssl               = true,
+    $kerberos          = false,
+    $web_user          = 'www-data',
+    $default_vhost     = false,
     $ssl_cert_filename = "/etc/apache2/ssl/${vhost_name}.crt.crt",
-    $ssl_key_filename  = "/etc/apache2/ssl/${vhost_name}.crt.key"
+    $ssl_key_filename  = "/etc/apache2/ssl/${vhost_name}.crt.key",
     $krb_auth_realm    = undef,
     $krb_5keytab       = undef,
     $krb_servicename   = 'http'
@@ -25,10 +26,10 @@ define webserver::vhost (
     command => "/bin/mkdir -p ${docroot}",
     cwd     => '/var/www/'
   }  -> file { $docroot:
-    ensure  => directory,
-    owner   => $web_user,
-    group   => $web_user,
-    mode    => '0750',
+    ensure => directory,
+    owner  => $web_user,
+    group  => $web_user,
+    mode   => '0750',
   }
 
   apache::vhost { $vhost_name:
@@ -41,18 +42,24 @@ define webserver::vhost (
 
   if $kerberos == true {
     Apache::Vhost[$vhost_name] {
-      auth_kerb              => 'true',
+      auth_kerb              => true,
       krb_auth_realm         => $krb_auth_realm,
       krb_5keytab            => $krb_5keytab,
       krb_servicename        => $krb_servicename,
-      krb_local_user_mapping => 'on'
+      krb_local_user_mapping => 'on',
+      directories            => [{
+        path                 => $docroot,
+        auth_name            => 'Kerberos Login',
+        auth_type            => 'Kerberos',
+        auth_require         => 'pam-account http'
+      }]
     }
   }
 
   if $ssl == true {
-    ipa::sslcert { "${krb_servicename}/${facts['fqdn']}":
+    ipa::sslcert { "${krb_servicename}/${::facts['fqdn']}":
       fname   => $ssl_cert_filename,
-      domain  => $facts['fqdn'],
+      domain  => $::facts['fqdn'],
       service => $krb_servicename,
     }
     Apache::Vhost[$vhost_name] {

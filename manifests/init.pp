@@ -43,10 +43,9 @@ class webserver (
   $all_vhosts = lookup('webserver::vhosts', Hash, 'hash')
 
   $all_vhosts.each |$vhost| {
-    if $vhost['vhost_name'] == $facts['fqdn'] {
+    if $vhost['vhost_name'] == $::facts['fqdn'] {
       create_resources(webserver::vhost,
-      {$facts['fqdn'] => $vhost})
+      {$::facts['fqdn'] => $vhost})
     }
   }
 }
-
