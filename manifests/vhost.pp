@@ -15,11 +15,10 @@ define webserver::vhost (
     $default_vhost = false,
     $ssl_cert_filename = "/etc/apache2/ssl/${vhost_name}.crt.crt",
     $ssl_key_filename  = "/etc/apache2/ssl/${vhost_name}.crt.key"
+    $krb_auth_realm    = undef,
+    $krb_5keytab       = undef,
+    $krb_servicename   = 'http'
   ) {
-
-  $krb_auth_realm  = lookup('webserver::krb_auth_realm', String)
-  $krb_5keytab     = lookup('webserver::krb_5keytab', String)
-  $krb_servicename = lookup('webserver::krb_servicename', String, 'first', 'http')
 
   exec { "Create document root ${docroot}":
     creates => $docroot,
