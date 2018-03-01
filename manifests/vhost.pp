@@ -57,11 +57,6 @@ define webserver::vhost (
   }
 
   if $ssl == true {
-    ipa::sslcert { "${krb_servicename}/${::facts['fqdn']}":
-      fname   => $ssl_cert_filename,
-      domain  => $::facts['fqdn'],
-      service => $krb_servicename,
-    }
     Apache::Vhost[$vhost_name] {
       port              => '443',
       ssl_protocol      => 'TLSv1.2',
