@@ -11,7 +11,7 @@ define webserver::vhost (
     $vhost_name        = $::facts['fqdn'],
     $docroot           = "/var/www/${vhost_name}/html",
     $ssl               = true,
-    $kerberos          = false,
+    $kerberos          = true,
     $web_user          = 'www-data',
     $default_vhost     = false,
     $ssl_cert_filename = "/etc/apache2/ssl/${vhost_name}.crt.crt",
